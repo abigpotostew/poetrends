@@ -33,7 +33,7 @@ public class POEParseTest {
     public void jsonParseTest(){
         POEParse ps = POEParse.testInit("test/resources/sample_poe.json");
 
-        Stream<Stash> stream = ps.parse();
+        Stream<Stash> stream = ps.parse().stream();
         List<String> accounts = Arrays.asList("KronicTide", "mortimermcmire", "apexmateria1");
         List<Stash> res = stream.filter(obj -> obj != null )
                 .filter(json -> accounts.contains(json.accountName() ))

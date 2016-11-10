@@ -15,8 +15,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 /**
  * Created by stew.bracken on 11/6/16.
@@ -39,32 +39,39 @@ public class POEParse {
 
 
     /**
-     * Builds a new POEParse after loading form poe and saving raw data to file
+     * Downloads stash data from POE.com and saves to a file.
      * @param changeId next change id to query poe api, ok null
+     * @return new POEParse instance with link to stash data location on OS
      */
     public static POEParse init(String changeId){
-        String Url = "http://www.pathofexile.com/api/public-stash-tabs";
+        String url = "http://www.pathofexile.com/api/public-stash-tabs";
         if ( !SUtil.NullEmpty(changeId) ){
-            Url += "?id=" + changeId;
+            url += "?id=" + changeId;
         }
         System.currentTimeMillis();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH.mm.ss", Locale.ENGLISH);
         String dtm = format.format(Calendar.getInstance().getTime());
 
-        final String dataLoc = "poe"+dtm+".json";
-        ParseDestination pd = new ParseDestination(dataLoc);
-        SFileUtil.curl(Url, pd.fileFromLoc().toFile());
+        final String dataFileName = "poe"+dtm+".json";
+        ParseDestination pd = new ParseDestination(dataFileName);
+        //download and save to file
+        SFileUtil.curl(url, pd.fileFromLoc().toFile());
 
         return new POEParse(changeId, pd);
     }
 
+    /**
+     * new instance that will point to a test poe stash file
+     * @param fileLoc
+     * @return new instance, with not yet parsed data.
+     */
     public static POEParse testInit(String fileLoc){
         ParseDestination pdt = new ParseDestination(fileLoc);
         pdt.fullFile(true);
         return new POEParse(null,pdt);
     }
 
-    public Stream<Stash> parse(){
+    public List<Stash> parse(){
         assert(dataLoc!=null);
         //Arrays.asList
         // ArrayList.stream()
@@ -79,7 +86,7 @@ public class POEParse {
         nextChangeId = obj.getString("next_change_id");
         JSONArray stashes = obj.getJSONArray("stashes");
         //System.out.println(stashes.getClass()+" - " + stashes.toList().getClass());
-        return toList(stashes).stream();
+        return toList(stashes);
     }
 
     ArrayList<Stash> toList (JSONArray ar){

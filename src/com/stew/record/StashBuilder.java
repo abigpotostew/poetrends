@@ -1,23 +1,28 @@
 package com.stew.record;
 
+import com.stew.record.item.JsonStashItem;
+import com.stew.record.item.StashItem;
+import org.bson.BSONException;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by stew.bracken on 11/7/16.
  */
 public class StashBuilder implements IBuilder<Stash> {
-    String accountName, id, name, type;
+    String accountName, id, stashName, type;
     ArrayList<StashItem> items;
 
     public StashBuilder(){}
 
     @Override
     public Stash build(){
-        return new Stash(accountName, id, name, type, items);
+        return new Stash(accountName, id, stashName, type, items);
     }
 
     public StashBuilder accountName(String name){
@@ -30,8 +35,8 @@ public class StashBuilder implements IBuilder<Stash> {
         return this;
     }
 
-    public StashBuilder name(String name){
-        this.name = name;
+    public StashBuilder stashName(String stashName){
+        this.stashName = stashName;
         return this;
     }
 
@@ -47,13 +52,13 @@ public class StashBuilder implements IBuilder<Stash> {
                 String value = json.getString(strAttr[i]);
                 switch(strAttr[i]){
                     case "accountName":
-                        accountName(value);
+                        accountName(value); break;
                     case "id":
-                        id(value);
+                        id(value); break;
                     case "stash":
-                        name(value);
+                        stashName(value); break;
                     case "stashType":
-                        type(value);
+                        type(value); break;
                 }
             }catch(JSONException e){
                 System.out.println("Error, could not read stash property with key"+strAttr[i]);
@@ -70,5 +75,19 @@ public class StashBuilder implements IBuilder<Stash> {
             }
         }
         return this;
+    }
+
+    public StashBuilder fromBsonDoc(final Document doc) throws BSONException{
+        accountName(doc.getString("accountName"));
+        id(doc.getString("id"));
+        stashName(doc.getString("stash"));
+        type(doc.getString("stashType"));
+        items = new ArrayList<>();
+        List<Document> itemDocs = (List) doc.get("items");
+        for (Document doc : itemDocs) {
+
+        }
+
+        return null;
     }
 }

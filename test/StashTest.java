@@ -10,7 +10,7 @@ public class StashTest {
     @Test
     public void stashBuilderTest(){
         StashBuilder builder = new StashBuilder();
-        builder.name("name");
+        builder.stashName("name");
         builder.accountName("account name");
         builder.id("id");
         builder.type("type");

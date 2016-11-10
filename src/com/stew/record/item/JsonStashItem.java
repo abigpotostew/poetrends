@@ -1,11 +1,11 @@
-package com.stew.record;
+package com.stew.record.item;
 
 import org.json.JSONObject;
 
 /**
  * Created by stew.bracken on 11/7/16.
  */
-public class JsonStashItem implements StashItem{
+public class JsonStashItem implements StashItem {
 
     String id;
     JSONObject original;
@@ -23,5 +23,5 @@ public class JsonStashItem implements StashItem{
     public int hashCode(){
         //TODO: temporary until I deserialize items
         return original.toString().hashCode();//StashHashUtil.UNHASHED;
-    };
+    }
 }
